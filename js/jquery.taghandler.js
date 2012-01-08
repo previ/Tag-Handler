@@ -331,11 +331,11 @@
                 if (opts.allowEdit) {
                     // delegates a click event function to all future <li> elements with
                     // the tagItem class that will remove the tag upon click
-                    tagContainerObject.delegate("li.tagItem", "click", function() {
+                    tagContainerObject.delegate("a.tagItemRemove", "click", function() {
                         if ( typeof(opts.onDelete) == "function" ) {
-                            opts.onDelete.call(this, $.trim($(this).text()));
+                            opts.onDelete.call(this, $.trim($(this).prev().text()));
                         }
-                        tags = removeTag($(this), tags, opts.sortTags);
+                        tags = removeTag($(this).prev(), tags, opts.sortTags);
                         if (opts.updateURL !=='' && opts.autoUpdate) {
                             saveTags(tags, opts, tagContainer.id);
                         }
@@ -535,7 +535,7 @@
     function addTag(tagField, value, tags, sort) {
         tags.assignedTags.push(value);
         tags.availableTags = removeTagFromList(value, tags.availableTags);
-        $("<li />").addClass("tagItem").html(value).insertBefore($(tagField).parent());
+        $("<li />").addClass("tagItem").html("<span>"+value+"</span>&nbsp;|&nbsp;<a class='tagItemRemove' href='#'>x</a>").insertBefore($(tagField).parent());
 
         if (sort) {
             tags = sortTags(tags);
@@ -550,7 +550,7 @@
         if (checkTag(value, tags.originalTags)) {
             tags.availableTags.push(value);
         }
-        $(tag).remove();
+        $(tag).parent().remove();
 
         if (sort) {
             tags = sortTags(tags);
